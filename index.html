@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aakanksha Alphabates Arrange Game</title>
+  <style>
+    /* Basic styling for layout and colors */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2em;
+      color: #0066cc;
+    }
+    .game-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #333;
+      background-color: #e6f7ff;
+      border-radius: 8px;
+    }
+    .alphabet-buttons button {
+      font-size: 1.2em;
+      margin: 5px;
+      padding: 10px;
+      background-color: #ffd700;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .score-card, .timer {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    .input-boxes {
+      margin-top: 20px;
+    }
+    .input-boxes input {
+      width: 40px;
+      font-size: 1.2em;
+      text-align: center;
+      margin: 5px;
+    }
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1><b>Aakanksha Alphabates Arrange Game</b></h1>
+  <h3>Arrange the alphabets to form as many four-letter English words as you can within 2 minutes!</h3>
+  <div class="game-container">
+    <form id="player-form">
+      <label for="player-name">Enter Player Name:</label>
+      <input type="text" id="player-name" required>
+      <button type="button" onclick="startGame()">Start Game</button>
+    </form>
+
+    <div id="game-area" style="display: none;">
+      <div class="timer">Time Left: <span id="timer">120</span> seconds</div>
+      <div class="score-card">Score: <span id="score">0</span></div>
+
+      <div class="alphabet-buttons">
+        <!-- Buttons for each alphabet -->
+        <script>
+          for (let i = 65; i <= 90; i++) { // A to Z ASCII codes
+            document.write(`<button onclick="selectLetter('${String.fromCharCode(i)}')">${String.fromCharCode(i)}</button>`);
+          }
+        </script>
+      </div>
+
+      <div class="input-boxes">
+        <!-- 4 input boxes for forming words -->
+        <input type="text" maxlength="1" id="letter1" readonly>
+        <input type="text" maxlength="1" id="letter2" readonly>
+        <input type="text" maxlength="1" id="letter3" readonly>
+        <input type="text" maxlength="1" id="letter4" readonly>
+      </div>
+
+      <button class="submit-btn" onclick="submitWord()">Submit Word</button>
+    </div>
+
+    <div id="results" style="margin-top: 20px;"></div>
+  </div>
+
+  <script>
+    let timer;
+    let timeLeft = 120;
+    let score = 0;
+    let selectedLetters = [];
+
+    function startGame() {
+      document.getElementById('player-form').style.display = 'none';
+      document.getElementById('game-area').style.display = 'block';
+      startTimer();
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function selectLetter(letter) {
+      if (selectedLetters.length < 4) {
+        selectedLetters.push(letter);
+        document.getElementById(`letter${selectedLetters.length}`).value = letter;
+      }
+    }
+
+    function submitWord() {
+      if (selectedLetters.length === 4) {
+        const word = selectedLetters.join('');
+        selectedLetters = []; // Reset selected letters
+
+        // Clear input boxes
+        for (let i = 1; i <= 4; i++) {
+          document.getElementById(`letter${i}`).value = '';
+        }
+
+        // Check word validity (placeholder logic)
+        if (isValidWord(word)) {
+          score += 5; // Increase score by 5 for each valid word
+          document.getElementById('score').textContent = score;
+          displayFeedback("Good job! Keep going!");
+        } else {
+          displayFeedback("Not a valid word. Try again!");
+        }
+      }
+    }
+
+    function displayFeedback(message) {
+      const feedback = document.createElement('p');
+      feedback.textContent = message;
+      document.getElementById('results').appendChild(feedback);
+    }
+
+    function endGame() {
+      document.getElementById('results').innerHTML = `<h3>Game Over!</h3><p>Your Score: ${score}</p>`;
+      document.getElementById('game-area').style.display = 'none';
+      document.getElementById('player-form').style.display = 'block';
+      score = 0;
+      timeLeft = 120;
+    }
+
+    function isValidWord(word) {
+      // Placeholder for word validation (would need a dictionary or API)
+      return true; // Assume all four-letter combinations are valid for this example
+    }
+  </script>
+
+</body>
+</html>
